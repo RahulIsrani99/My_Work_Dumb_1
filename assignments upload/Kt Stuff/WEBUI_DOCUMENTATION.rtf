@@ -1,0 +1,155 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red24\green25\blue27;\red249\green249\blue249;\red24\green25\blue27;
+\red51\green51\blue51;\red255\green255\blue255;\red23\green90\blue226;}
+{\*\expandedcolortbl;;\cssrgb\c12549\c12941\c14118;\cssrgb\c98039\c98039\c98039;\cssrgb\c12549\c12941\c14118\c3922;
+\cssrgb\c25882\c25882\c25882;\cssrgb\c100000\c100000\c100000;\cssrgb\c10196\c45098\c90980;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28300\viewh17140\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 						
+\fs48 						   WEBUI_REPORT\
+\
+Download respective CSV from Mail and specific links as well\
+\
+\
+\
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\fs22 \cf2 \cb3 \expnd0\expndtw0\kerning0
+Use this command for web UI
+\fs28 \cb4 \
+\
+
+\fs22 \cb3 SSH into VM *insight-ftp0* 
+\fs28 \cb4 \
+switch to root user\
+\
+>> sudo su\'a0\
+\
+
+\fs22 \cb3  Then upload the web-ui created files and move them to data_In user home directory
+\fs28 \cb4 \
+\
+>> mv webui_topline_revenue_202210* /home/data_In/\
+\
+
+\fs22 \cb3 Then to change ownership and grp to data_In user follow.
+\fs28 \cb4 \
+>> cd /home/data_In/\
+>> ls -ltr\'a0\
+>> chown data_In:data_In webui_topline_revenue_202210*\
+\'a0>> ls -ltr\
+\
+\
+##Note: Please make sure once u upload the file its ownershp and grp is data_In\
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\fs25\fsmilli12800 \cf5 \cb6 For Backdated Run of web-UI/APRD daily revenue
+\fs28 \cf2 \cb4 \
+there is two Jenkins job that reads data from this file and writes it into the table.\
+\
+` 1st job is in insights-jenkins-prd VM (i.e localhost:8887)\
+Job Name ->  /BOAT_and_APRD/job/APRD_Offline_webui_top_line_revenue_16_2/ `\
+\
+` 2nd Job in mm-insights-prod-jenkins VM (i.e localhost:8886)\
+Job Name --> APRD_Daily_FinalRevenueMetrics `\
+\
+This job runs daily at 5PM IST automated \
+
+\fs25\fsmilli12800 \cf5 \cb6 In any case, if we miss a file and to run backdated Please follow these steps 
+\fs28 \cf2 \cb4 \
+So we run Bulk Data load \
+\
+so for 1st job APRD_Offline_webui_top_line_revenue\
+\
+In Bulk data load of  insights-jenkins-prd VM\
+\
+Build with Parammeter
+\fs25\fsmilli12800 \cf5 \cb6 \
+Job to run -> APRD webui top line revenue\
+\
+start_Date -> from date to end_Date\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf2 \cb4 and Build the job\
+\
+--------------------------------------------------------------------------------\
+for 2nd job \
+In mm-insights-prod-jenkins VM  open Bulk data load\
+\pard\pardeftab720\partightenfactor0
+
+\fs25\fsmilli12800 \cf5 \cb6 jobtorun --> APRD daily FinalRevenueMetrics\
+start_date -->\
+end_Date-->\
+productlist --> mmedw 
+\fs28 \cf2 \cb4 \
+-----------------------------------------------------------------------\
+\
+\
+\
+
+\fs25\fsmilli12800 \cf5 \cb6 For validation\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf2 \cb4 As we discussed this job wites data into two tables.\
+these are two tables where it appends data.\
+\
+1.
+\fs22 \cb3  mm-insights-prod.mmedw.aprd_daily_localtoplinerevenue
+\fs28 \cb4 \
+2. 
+\fs22 \cb3 mm-insights-prod.mmedw.aprd_daily_finalrevenuemetrics\
+\
+
+\fs28 \cb4 so one job is completed we can check on this table\
+\
+query 1.\
+for validating 
+\fs22 \cb3 localtoplinerevenue
+\fs28 \cb4  table.\
+here the count of rows should maintain trend of 53 for each date.\
+\
+link to sql -> {\field{\*\fldinst{HYPERLINK "https://console.cloud.google.com/bigquery?sq=903185324359:db6dcc0b0ba045d8bf2ab01d72238cec"}}{\fldrslt \cf7 \cb4 https://console.cloud.google.com/bigquery?sq=903185324359:db6dcc0b0ba045d8bf2ab01d72238cec}}\cf7 \cb4 \
+\
+\
+\cf2 \cb4 query 2 -> \
+for validating 
+\fs22 \cb3 finalrevenuemetrics
+\fs28 \cb4  table\
+## Note after running this job table takes some time to update as the following Jenkins job triggers a DataFlow job which takes time to update the table, so u can have a coffee break for 15 min :p\
+
+\fs22 \cb3  here rows maintain a trend of data between 96-97 for  each date 
+\fs28 \cb4 \
+\
+link to sql -> {\field{\*\fldinst{HYPERLINK "https://console.cloud.google.com/bigquery?sq=903185324359:cb7dfb5b86b84f738e66d012d44b45df"}}{\fldrslt \cf7 \cb4 https://console.cloud.google.com/bigquery?sq=903185324359:cb7dfb5b86b84f738e66d012d44b45df}}\cf7 \cb4 \
+\
+\cf2 \cb4 for jenkins\
+you can use this credntials\
+\
+\pard\pardeftab720\partightenfactor0
+
+\fs25\fsmilli12800 \cf5 \cb6 For insights-jenkins-prd VM (i.e localhost:8887)\
+\
+\pard\pardeftab720\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://insights-jenkins-prd.vuclip.com/"}}{\fldrslt 
+\fs28 \cf7 \cb4 https://insights-jenkins-prd.vuclip.com/}}
+\fs28 \cf2 \cb4 \
+Username: insights-user\
+Password: Sandisk@2022\
+\
+\pard\pardeftab720\partightenfactor0
+
+\fs25\fsmilli12800 \cf5 \cb6 For mm-insights-prod VM  (i.e localhost:8886)\
+\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf2 \cb4 URL: {\field{\*\fldinst{HYPERLINK "https://mm-insights-prod-jenkins.vuclip.com/"}}{\fldrslt \cf7 \cb4 https://mm-insights-prod-jenkins.vuclip.com/}}\
+Username: admin\
+Password: Sandisk@2022\
+\
+}

@@ -1,0 +1,295 @@
+					LEETCODE
+
+Q1:-
+Write an SQL query to report the first name, last name, city, and state of each person in the Person table. If the address of a personId is not present in the Address table, report null instead.
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| addressId   | int     |
+| personId    | int     |
+| city        | varchar |
+| state       | varchar |
++-------------+---------+
+
+soln:-
+    select a.firstName,a.lastName,b.city,b.state
+    from Person a left join Address b on a.personID=b.personID;
+
+Q2:-
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+id is the primary key column for this table.
+Each row of this table contains information about the salary of an employee.
+ Write an SQL query to report the second highest salary from the Employee table. If there is no second highest salary, the query should report null.
+The query result format is in the following example.
+
+soln:-
+
+SELECT CASE WHEN Salary = '' THEN NULL
+ELSE max(Salary) 
+END AS SecondHighestSalary  FROM Employee
+where SALARY < (SELECT MAX(SALARY) FROM Employee);           
+
+Q3:-
+Write an SQL query to report the nth highest salary from the Employee table. If there is no nth highest salary, the query should report null.
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+
+soln:-
+
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+DECLARE M INT; 
+SET M = N - 1;
+
+RETURN (
+      SELECT DISTINCT Salary FROM Employee ORDER BY Salary DESC LIMIT M, 1    
+
+  );
+END
+
+Q4:-
+
+Write an SQL query to rank the scores. The ranking should be calculated according to the following rules:
+
+The scores should be ranked from the highest to the lowest.
+If there is a tie between two scores, both should have the same ranking.
+After a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no holes between ranks.
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| score       | decimal |
++-------------+---------+
+
+soln:-
+		select S.Score, Dense_Rank() over(order by S.Score desc) 'Rank' from Scores S
+
+Q5:-
+Write an SQL query to find all numbers that appear at least three times consecutively.
+Return the result table in any order.
+The query result format is in the following example.
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| num         | varchar |
++-------------+---------+
+
+soln:-
+
+SELECT  DISTINCT(Num) AS ConsecutiveNums
+FROM (
+    SELECT
+    Num,
+    @counter := IF(@prev = Num, @counter + 1, 1) AS how_many_cnt_in_a_row,
+    @prev := Num
+    FROM Logs y, (SELECT @counter:=1, @prev:=NULL) vars
+) sq
+WHERE how_many_cnt_in_a_row >= 3
+
+Q6:-
+Write an SQL query to find the employees who earn more than their managers.
+Return the result table in any order.
+The query result format is in the following example.
+
+soln:-
+	select name as employee from employee a 
+where salary >(select salary from employee b where b.id=a.managerid )
+
+Q7:-
+Write an SQL query to report all the duplicate emails.
+Return the result table in any order.
+The query result format is in the following example.
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| email       | varchar |
++-------------+---------+
+
+soln:-
+select email from person group by email
+having count(email)>1
+
+Q8:-
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| customerId  | int  |
++-------------+------+
+id is the primary key column for this table.
+customerId is a foreign key of the ID from the Customers table.
+Each row of this table indicates the ID of an order and the ID of the customer who ordered it.
+ 
+Write an SQL query to report all customers who never order anything.
+soln:-
+
+select
+    Name as Customers
+from
+    Customers
+where
+    Id
+ not in(
+    select CustomerId from Orders
+);
+
+Q9:-
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| id           | int     |
+| name         | varchar |
+| salary       | int     |
+| departmentId | int     |
++--------------+---------+
+id is the primary key column for this table.
+departmentId is a foreign key of the ID from the Department table.
+Each row of this table indicates the ID, name, and salary of an employee. It also contains the ID of their department.
+
+
+soln:-
+with max_salary as (select e.DepartmentId, max(Salary) Salary 
+from Employee as e 
+group by e.DepartmentId)
+
+select d.Name Department, e.Name Employee, e.Salary
+from max_salary join Employee e on e.DepartmentId = max_salary.DepartmentId and max_salary.Salary = e.Salary
+join Department d
+on e.DepartmentId = d.id 
+
+Q10:-
+
+Write an SQL query to find the employees who are high earners in each of the departments.
+
+Return the result table in any order.
+
+Employee table:
++----+-------+--------+--------------+
+| id | name  | salary | departmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 85000  | 1            |
+| 2  | Henry | 80000  | 2            |
+| 3  | Sam   | 60000  | 2            |
+| 4  | Max   | 90000  | 1            |
+| 5  | Janet | 69000  | 1            |
+| 6  | Randy | 85000  | 1            |
+| 7  | Will  | 70000  | 1            |
++----+-------+--------+--------------+
+
+soln:-
+    SELECT D.Name AS Department, E.Name AS Employee, E.Salary AS Salary 
+FROM Employee E INNER JOIN Department D ON E.DepartmentId = D.Id 
+WHERE (SELECT COUNT(DISTINCT(Salary)) FROM Employee 
+       WHERE DepartmentId = E.DepartmentId AND Salary > E.Salary) < 3
+ORDER by E.DepartmentId, E.Salary DESC;
+
+
+Q11:-
+Write an SQL query to delete all the duplicate emails, keeping only one unique email with the smallest id. Note that you are supposed to write a DELETE statement and not a SELECT one.
+
+Person table:
++----+------------------+
+| id | email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
+| 3  | john@example.com |
++----+------------------+
+
+soln:-
+DELETE from Person where Id  not in
+(select id from (select min(Id) as Id 
+                            from Person group by Email ) as p)
+
+Q12:-
+Write an SQL query to find all dates' Id with higher temperatures compared to its previous dates (yesterday).
+
+Return the result table in any order.
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+
+soln:-
+select t.Id from Weather as t, Weather as y
+where Datediff (t.RecordDate, y.RecordDate) =1 
+    and t.Temperature > y.Temperature;
+
+Q13:-
+The cancellation rate is computed by dividing the number of canceled (by client or driver) requests with unbanned users by the total number of requests with unbanned users on that day.
+
+Write a SQL query to find the cancellation rate of requests with unbanned users (both client and driver must not be banned) each day between "2013-10-01" and "2013-10-03". Round
+
+Trips table:
++----+-----------+-----------+---------+---------------------+------------+
+| id | client_id | driver_id | city_id | status              | request_at |
++----+-----------+-----------+---------+---------------------+------------+
+| 1  | 1         | 10        | 1       | completed           | 2013-10-01 |
+| 2  | 2         | 11        | 1       | cancelled_by_driver | 2013-10-01 |
+| 3  | 3         | 12        | 6       | completed           | 2013-10-01 |
+| 4  | 4         | 13        | 6       | cancelled_by_client | 2013-10-01 |
+| 5  | 1         | 10        | 1       | completed           | 2013-10-02 |
+| 6  | 2         | 11        | 6       | completed           | 2013-10-02 |
+| 7  | 3         | 12        | 6       | completed           | 2013-10-02 |
+| 8  | 2         | 12        | 12      | completed           | 2013-10-03 |
+| 9  | 3         | 10        | 12      | completed           | 2013-10-03 |
+| 10 | 4         | 13        | 12      | cancelled_by_driver | 2013-10-03 |
++----+-----------+-----------+---------+---------------------+------------+
+Users table:
++----------+--------+--------+
+| users_id | banned | role   |
++----------+--------+--------+
+| 1        | No     | client |
+| 2        | Yes    | client |
+| 3        | No     | client |
+| 4        | No     | client |
+| 10       | No     | driver |
+| 11       | No     | driver |
+| 12       | No     | driver |
+| 13       | No     | driver |
++----------+--------+--------+
+
+soln:--
+
+select request_at as "Day",
+   round(coalesce(sum(cancels), 0)/coalesce(sum(requests), 0)/1.0, 2) as "Cancellation Rate"
+from
+(
+    select request_at, count(*) as cancels, 0 as requests
+    from trips t
+    join users uc on t.client_id = uc.users_id and 'No' = uc.banned and 'client' = uc.role
+    join users ud on t.driver_id = ud.users_id and 'No' = ud.banned and 'driver' = ud.role
+    where t.status in ('cancelled_by_driver', 'cancelled_by_client')
+        and t.request_at between '2013-10-01' and '2013-10-03'
+    group by request_at
+    
+    union all
+    
+    select request_at, 0 as cancels, count(*) as requests
+    from trips t
+    join users uc on t.client_id = uc.users_id and 'No' = uc.banned and 'client' = uc.role
+    join users ud on t.driver_id = ud.users_id and 'No' = ud.banned and 'driver' = ud.role
+    where t.request_at between '2013-10-01' and '2013-10-03'
+    group by request_at
+) main
+group by request_at
+
+
+

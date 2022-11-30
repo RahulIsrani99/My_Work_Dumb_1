@@ -1,0 +1,129 @@
+InternShip Assigment No:-2
+
+
+
+Q1:-HackerRank question
+You are given a table, Projects, containing three columns: Task_ID, Start_Date and End_Date. It is guaranteed that the difference between the End_Date and the Start_Date is equal to 1 day for each row in the table.
+f the End_Date of the tasks are consecutive, then they are part of the same project. Samantha is interested in finding the total number of different projects completed.
+Write a query to output the start and end dates of projects listed by the number of days it took to complete the project in ascending order. If there is more than one project that have the same number of completion days, then order by the start date of the project. 
+
+SELECT START_DATE, MIN(END_DATE)
+FROM
+  (SELECT START_DATE
+   FROM PROJECTS
+   WHERE START_DATE NOT IN
+       (SELECT END_DATE
+        FROM PROJECTS)) A,
+        (select end_date from projects where end_date not in
+         (select start_date from projects)) b
+         where start_date < end_date
+         group by start_date
+         order by (min(end_date)-(start_date)),start_date;
+
+Q2:-
+You are given three tables: Students, Friends and Packages. Students contains two columns: ID and Name. Friends contains two columns: ID and Friend_ID (ID of the ONLY best friend). Packages contains two columns: ID and Salary (offered salary in $ thousands per month).
+
+Write a query to output the names of those students whose best friends got offered a higher salary than them. Names must be ordered by the salary amount offered to the best friends. It is guaranteed that no two students got same salary offer.
+
+
+SELECT a.name 
+FROM (SELECT students.id as s_id, students.name, packages.salary 
+      FROM students join packages on students.id = packages.id) a 
+JOIN (SELECT f.id as f_id1, p.salary 
+FROM friends f JOIN packages p ON f.friend_id = p.id) b 
+ON a.s_id = b.f_id1 
+WHERE b.salary>a.salary 
+ORDER BY b.salary ASC;
+
+Q3:--
+
+You are given a table, Functions, containing two columns: X and Y.
+
+Two pairs (X1, Y1) and (X2, Y2) are said to be symmetric pairs if X1 = Y2 and X2 = Y1.
+Write a query to output all such symmetric pairs in ascending order by the value of X. List the rows such that X1 ≤ Y1.
+
+SELECT a.X, a.Y FROM Functions AS a
+WHERE a.X = a.Y and
+(select count(*) from functions where x=a.x and y=a.y)>1
+union 
+SELECT a.X, a.Y FROM Functions AS a 
+WHERE exists (select x,y from functions where a.x=y and a.y=x and a.x<x)
+order by x;
+
+Q4
+SELECT CASE
+WHEN A + B <= C OR A + C <= B OR B + C <= A THEN 'Not A Triangle'
+WHEN A = B AND B = C THEN 'Equilateral'
+WHEN A = B OR B = C OR A = C THEN 'Isosceles'
+ELSE 'Scalene'
+END
+FROM TRIANGLES;
+
+Q5:-
+
+Query the total population of all cities in CITY where District is California.
+
+
+SELECT SUM(POPULATION)
+FROM CITY
+WHERE DISTRICT = "California";
+
+Q6:-
+Query the average population for all cities in CITY, rounded down to the nearest integer.
+
+SELECT round(avg(POPULATION))
+FROM CITY;
+
+
+Q7:-
+
+Query the list of CITY names starting with vowels (i.e., a, e, i, o, or u) from STATION. Your result cannot contain duplicates.
+
+select distinct(city) from station 
+where city like 'a%' or
+city like 'e%' or
+city like 'i%' or
+city like 'o%' or
+city like 'u%';
+
+Q8:-
+
+Query the list of CITY names ending with vowels (a, e, i, o, u) from STATION. Your result cannot contain duplicates.
+
+select distinct(city) from station 
+where city like '%a' or
+city like '%e' or
+city like '%i' or
+city like '%o' or
+city like '%u';
+
+Q9:-
+
+Query the list of CITY names from STATION which have vowels (i.e., a, e, i, o, and u) as both their first and last characters. Your result cannot contain duplicates.
+
+SELECT DISTINCT city
+FROM   station
+WHERE  city RLIKE '^[aeiouAEIOU].*[aeiouAEIOU]$'
+
+Q10:-
+
+Write a query that prints a list of employee names (i.e.: the name attribute) for employees in Employee having a salary greater than  per month who have been employees for less than  months. Sort your result by ascending employee_id.
+
+select name from employee 
+where salary > 2000 and months <10
+order by employee_id ;
+
+Q11:-
+Query the average population for all cities in CITY, rounded down to the nearest integer.
+
+
+select round(avg(population )) from city;
+
+Q12:-
+Query the smallest Northern Latitude (LAT_N) from STATION that is greater than . Round your answer to  decimal places.
+
+select round(min(lat_n),4) from station where lat_n > 38.7780
+
+
+
+

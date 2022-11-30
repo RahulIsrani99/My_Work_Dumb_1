@@ -1,0 +1,436 @@
+INTERNSHIP ASSIGMENTS :---1
+
+
+
+				ADVENTURE Wroks:::::
+
+Q1:- 
+
+From the following table write a query in SQL to retrieve all rows and columns from the employee table in the Adventureworks database. Sort the result set in ascending order on jobtitle.
+
+Ans:-
+
+	 select * from humanresources.employee
+	order by jobtitle asc;
+
+
+Q2:-
+
+From the following table write a query in SQL to retrieve all rows and columns from the employee table using table aliasing in the Adventureworks database. Sort the output in ascending order on lastname
+
+Ans;-
+	
+
+	 select * from person.person as zzz
+	 order by lastname asc;
+Q3 :-
+ From the following table write a query in SQL to return all rows and a subset of the columns (FirstName, LastName, businessentityid) from the person table in the AdventureWorks database. The third column heading is renamed to Employee_id. Arranged the output in ascending order by lastname. 
+
+Ans:-
+
+	  
+
+	  select firstname , lastname, businessentityid as "Employee_id"
+          from person.person
+	  order by lastname asc;
+
+Q4:-
+
+From the following table write a query in SQL to return only the rows for product that have a sellstartdate that is not NULL and a productline of 'T'. Return productid, productnumber, and name. Arranged the output in ascending order on name.
+
+
+Ans:-
+
+	SELECT productid, productnumber, name as producName
+	FROM production.product
+	WHERE sellstartdate IS NOT NULL
+	and production.product.productline ='T'
+	order by name ;
+
+Q5:-
+
+
+From the following table write a query in SQL to return all rows from the salesorderheader table in Adventureworks database and calculate the percentage of tax on the subtotal have decided. Return salesorderid, customerid, orderdate, subtotal, percentage of tax column. Arranged the result set in ascending order on subtotal.
+
+
+Ans:-
+
+	SELECT salesorderid, customerid, orderdate, subtotal,((taxamt*100)/subtotal) as tax_percent
+	FROM sales.salesorderheader
+	order by subtotal desc;
+
+Q6:-
+
+
+From the following table write a query in SQL to create a list of unique jobtitles in the employee table in Adventureworks database. Return jobtitle column and arranged the resultset in ascending order. 
+
+
+Ans:-
+
+	SELECT distinct(jobtitle)
+	FROM humanresources.employee
+	order by jobtitle asc;
+
+Q7:-
+
+
+
+ From the following table write a query in SQL to calculate the total freight paid by each customer. Return customerid and total freight. Sort the output in ascending order on customerid. 
+
+Ans:-
+
+	SELECT customerid, sum(freight) as total_freight
+	FROM sales.salesorderheader
+	group by customerid
+	order by customerid asc;
+
+
+
+
+Q8:-
+
+
+
+ From the following table write a query in SQL to find the average and the sum of the subtotal for every customer. Return customerid, average and sum of the subtotal. Grouped the result on customerid and salespersonid. Sort the result on customerid column in descending orde
+
+Ans:-
+
+
+	SELECT customerid,salespersonid, sum(subtotal) as sum_subtotal , avg(subtotal) as avg_subtotal 
+	FROM sales.salesorderheader
+	group by customerid, salespersonid
+	order by customerid desc;
+
+
+Q9:-
+
+From the following table write a query in SQL to retrieve total quantity of each productid which are in shelf of 'A' or 'C' or 'H'. Filter the results for sum quantity is more than 500. Return productid and sum of the quantity. Sort the results according to the productid in ascending order. 
+
+
+Ans:-
+
+	SELECT productid, sum(quantity)
+	FROM production.productinventory
+	where shelf in('A','B','C')
+	group by productid
+	having sum(quantity)>500
+	order by productid asc;
+
+
+Q10:-
+
+
+From the following table write a query in SQL to find the total quentity for a group of locationid multiplied by 10. 
+
+Ans:-
+
+	SELECT SUM(quantity) AS total_quantity
+	FROM production.productinventory
+	GROUP BY (locationid*10);
+
+Q11:-
+
+From the following tables write a query in SQL to find the persons whose last name starts with letter 'L'. Return BusinessEntityID, FirstName, LastName, and PhoneNumber. Sort the result on lastname and firstname.
+
+
+Ans:-
+
+	SELECT  a.businessentityid , b.FirstName, b.LastName, a.PhoneNumber
+	FROM Person.PersonPhone a 	
+	 join Person.Person b on 
+	a.businessentityid=b.businessentityid
+	WHERE b.LastName LIKE 'L%'
+	order by b.lastname,b.firstname ;
+
+
+
+Q12:-
+
+From the following table write a query in SQL to find the sum of subtotal column. Group the sum on distinct salespersonid and customerid. Rolls up the results into subtotal and running total. Return salespersonid, customerid and sum of subtotal column i.e. sum_subtotal.
+
+Ans:-
+
+	SELECT  salespersonid, customerid,sum(subtotal) as sum_subtotal
+	FROM sales.salesorderheader 
+	group by ROLLUP(salespersonid , customerid);
+
+
+Q13:-
+
+ From the following table write a query in SQL to find the sum of the quantity of all combination of group of distinct locationid and shelf column. Return locationid, shelf and sum of quantity as TotalQuantity.
+
+
+Ans:-
+SELECT locationid, shelf, SUM(quantity) AS TotalQuantity
+FROM production.productinventory
+GROUP BY CUBE (locationid, shelf)
+order by shelf ;
+
+
+Q14:-
+
+. From the following table write a query in SQL to find the sum of the quantity with subtotal for each locationid. Group the results for all combination of distinct locationid and shelf column. Rolls up the results into subtotal and running total. Return locationid, shelf and sum of quantity as TotalQuantity. 
+
+Ans:-
+
+SELECT locationid, shelf, SUM(quantity) AS TotalQuantity
+FROM production.productinventory
+GROUP BY GROUPING SETS ( ROLLUP (locationid, shelf), CUBE (locationid, shelf) )
+order by shelf;
+
+
+
+Q15	 
+
+
+
+From the following table write a query in SQL to find the total quantity for each locationid and calculate the grand-total for all locations. Return locationid and total quantity. Group the results on locationid.  
+
+
+Ans:-
+
+	SELECT locationid, SUM(quantity) AS TotalQuantity
+	FROM production.productinventory
+	GROUP BY GROUPING SETS ( locationid, () );
+
+				WORKING ON EMP TABLES
+
+
+
+
+
+
+
+Q1:-
+From the following tables write a SQL query to find the salesperson and customer who reside in the same city. Return Salesman, cust_name and city.
+Ans:-
+
+	SELECT salesman.name AS "Salesman",
+	customer.cust_name, customer.city 
+	FROM salesman,customer 
+	WHERE salesman.city=customer.city;
+
+
+
+Q2:-
+From the following tables write a SQL query to find those orders where the order amount exists between 500 and 2000. Return ord_no, purch_amt, cust_name, city.
+Ans:-
+	SELECT a.ord_no,a.purch_amt,
+	b. cust_name, b. city 
+	from orders a , customer b 	
+	where a. customer_id=b. customer_id
+	and  a.purch_amt BETWEEN 500 and 2000;
+Q3:-
+From the following tables write a SQL query to find the salesperson(s) and the customer(s) he represents. Return Customer Name, city, Salesman, commission.
+Ans:-
+	select a.cust_name, a.city, b.name, b.commission
+	from customer a , salesman b
+	where a. salesman_id=b. salesman_id ;
+Q4:-
+From the following tables write a SQL query to find salespeople who received commissions of more than 12 percent from the company. Return Customer Name, customer city, Salesman, commission. 
+Ans:-
+
+	select a. cust_name,a.city,b. name, b. commission
+	from customer a, salesman b
+	where commission >0.12;
+Q5:-
+From the following tables write a SQL query to locate those salespeople who do not live in the same city where their customers live and have received a commission of more than 12% from the company. Return Customer Name, customer city, Salesman, salesman city, commission.
+
+Ans:-
+
+select a. cust_name, a.city, b. name, b.city, b. commission
+from customer a, salesman b
+where commission >0.12 and a.city  != b.city ;
+
+
+Q6:-
+From the following tables write a SQL query to find the details of an order. Return ord_no, ord_date, purch_amt, Customer Name, grade, Salesman, commission.
+
+Ans:-
+
+	select a. ord_no,a. ord_date,a. purch_amt,b. cust_name,b. grade,c. name,c. commission
+	from orders a, customer b, salesman c;
+
+Q7:-
+Write a SQL statement to join the tables salesman, customer and orders so that the same column of each table appears once and only the relational rows are returned.
+
+
+Ans:- 
+	
+
+	SELECT * 
+	FROM orders 
+	NATURAL JOIN customer  
+	NATURAL JOIN salesman;
+
+
+Q8:-
+From the following tables write a SQL query to display the customer name, customer city, grade, salesman, salesman city. The results should be sorted by ascending customer_id.
+
+
+Ans:-
+
+	SELECT a.cust_name,a.city,a.grade, 
+	b.name AS "Salesman",b.city 	
+	FROM customer a 
+	LEFT JOIN salesman b 
+	ON a.salesman_id=b.salesman_id 
+	order by a.customer_id;
+
+Q9:-
+From the following tables write a SQL query to find those customers with a grade less than 300. Return cust_name, customer city, grade, Salesman, salesmancity. The result should be ordered by ascending customer_id
+
+Ans:-
+
+	SELECT a.cust_name,a.city,a.grade, 
+	b.name AS "Salesman",b.city 
+	FROM customer a 
+	LEFT JOIN salesman b 
+	ON a.salesman_id=b.salesman_id 
+	where a.grade <300
+	order by a.customer_id;
+
+
+Q10:-
+Write a SQL statement to make a report with customer name, city, order number, order date, and order amount in ascending order according to the order date to determine whether any of the existing customers have placed an order or not.
+Ans:-
+
+	SELECT a.cust_name,a.city, b.ord_no,
+	b.ord_date,b.purch_amt AS "Order Amount" 
+	FROM customer a 
+	LEFT OUTER JOIN orders b 
+	ON a.customer_id=b.customer_id 
+	order by b.ord_date;
+
+
+
+Q21:-
+
+From the following tables write a SQL query to select all rows from both participating tables as long as there is a match between pro_com and com_id
+
+Ans:-
+
+	select * 
+	from item_mast
+	inner join company_mast  on  item_mast. PRO_COM= company_mast.COM_ID;
+
+Q22:-
+
+Write a SQL query to display the item name, price, and company name of all the products
+
+Ans:-
+
+	SELECT item_mast.PRO_NAME,item_mast. PRO_PRICE, company_mast.COM_NAME
+   	FROM item_mast 
+   	right JOIN company_mast 
+   	ON item_mast.pro_com= company_mast.com_id; 
+Q23:-
+
+From the following tables write a SQL query to calculate the average price of items of each company. Return average value and company name
+
+Ans:-
+
+	SELECT AVG(item_mast.PRO_PRICE), company_mast.COM_NAME
+	 FROM item_mast 
+   	 right JOIN company_mast 
+   	ON item_mast.pro_com= company_mast.com_id
+   	group by company_mast.COM_NAME ; 
+
+Q24:-
+
+From the following tables write a SQL query to calculate and find the average price of items of each company higher than or equal to Rs. 350. Return average value and company name. 
+
+Ans:-
+
+	SELECT AVG(item_mast.PRO_PRICE), company_mast.COM_NAME
+        FROM item_mast 
+   	right JOIN company_mast 
+   	ON item_mast.pro_com= company_mast.com_id
+   	group by company_mast.COM_NAME having avg(pro_price)>=350 ;
+
+Q25:-
+
+From the following tables write a SQL query to find the most expensive product of each company. Return pro_name, pro_price and com_name. 
+
+Ans:-
+
+	select a.pro_name, a.PRO_PRICE,b. COM_NAME
+	from item_mast a inner join company_mast b 
+	on a.PRO_COM =b.COM_ID and
+	a.pro_price=
+	(select max(pro_price)
+	from item_mast a
+	where
+	a.PRO_COM=b.COM_ID)
+
+
+Q26:-
+
+From the following tables write a SQL query to display all the data of employees including their department.
+Ans:-
+
+	select a.EMP_IDNO, a.EMP_FNAME, a.EMP_LNAME, a.EMP_DEPT, b.DPT_NAME
+	from emp_details a inner join emp_department b on a. EMP_DEPT=b. DPT_CODE;
+Q27:-
+From the following tables write a SQL query to display the first and last names of each employee, as well as the department name and sanction amount.
+
+Ans:-
+
+	select  a.EMP_FNAME, a.EMP_LNAME, b.DPT_NAME,b. DPT_ALLOTMENT as "Sanction amount"
+	from emp_details a inner join emp_department b on a. EMP_DEPT=b. DPT_CODE;
+
+
+
+Q28:-
+
+ From the following tables write a SQL query to find the departments with budgets more than Rs. 50000 and display the first name and last name of employees.
+
+Ans:-
+
+	select  a.EMP_FNAME, a.EMP_LNAME, b. DPT_ALLOTMENT as "Budget"
+	from emp_details a inner join emp_department b on a. EMP_DEPT=b. DPT_CODE
+	where DPT_ALLOTMENT > 50000;
+
+
+Q29:-
+
+From the following tables write a SQL query to find the names of departments where more than two employees are employed. Return dpt_name
+
+Ans:-
+
+
+	SELECT a.EMP_DEPT,b.DPT_NAME
+	rom emp_details a inner join emp_department b on a. EMP_DEPT=b. DPT_CODE
+	group by  a.EMP_DEPT, b.DPT_NAME 
+	having  count(*)>2 ;
+
+SOME Sample Problem Solving
+
+
+SELECT * from dataset_1 d ;
+SELECT count(coupon) from dataset_1 d  WHERE coupon ="Restaurant(<20)";
+SELECT count(weather) from dataset_1 d  WHERE weather ='Snowy'  AND temperature < 55 ; 
+SELECT count(weather),AVG(temperature),SUM(time)  from dataset_1 d  group by weather ;
+SELECT passanger,age from dataset_1 d WHERE (destination='No Urgent Place') GROUP by passanger ,age ORDER by passanger ,age ;
+SELECT count(passanger),age from dataset_1 d GROUP by passanger ,age ORDER by passanger ,age ;
+SELECT count(passanger) from dataset_1 d2 group by passanger  HAVING  (SELECT COUNT(passanger) from dataset_1 d WHERE (CoffeeHouse="gt8") group by passanger 
+);
+SELECT COUNT(passanger) from dataset_1 d WHERE (CoffeeHouse="gt8") group by passanger ;
+SELECT count(passanger) from dataset_1 d WHERE  (select max(temperature) from
+dataset_1 d2 ) group by  passanger ;
+SELECT avg(temperature),min(time),MAX(time),sum(temperature)from dataset_1 d group by time ; 
+SELECT  passanger , COUNT(passanger) ,destination from dataset_1 d WHERE time='10AM' and (temperature <55) GROUP by passanger ;
+SELECT passanger,count(passanger) from dataset_1 d WHERE (weather ='Sunny' and time='2PM' and gender ='Female') GROUP  by passanger ;		
+SELECT passanger,COUNT(passanger),maritalStatus from dataset_1 d WHERE  maritalStatus='Single'  and gender ='Male'  GROUP by passanger ;
+SELECT destination from dataset_1 d WHERE temperature <80 ;
+SELECT time,count(time),passanger  from dataset_1 d WHERE temperature >50 GROUP by time ;
+SELECT passanger,COUNT(passanger),age from dataset_1 d  WHERE temperature >50 and  time='10PM' and age >50  ;
+SELECT 	count(passanger),coupon  from dataset_1 d WHERE passanger ='Friend(s)' and coupon ="Carry out & Take away" ;
+SELECT * FROM dataset_1 d WHERE  (passanger ="Alone" and weather='Sunny' and time='10AM');
+SELECT * FROM dataset_1 d group by passanger ,time ;
+SELECT count(passanger) from dataset_1 d WHERE temperature <55 and weather ='Snowy' and passanger ='Alone' ;
+SELECT count("") from dataset_1 d ;
+SELECT count(destination) from dataset_1 d  WHERE temperature <55 group by destination ;
+SELECT  passanger,weather,time ,coupon,expiration from dataset_1 d WHERE age >50 GROUP by row_count order by passanger  ;
+SELECT row_count ,passanger ,avg(row_count)/10 as sum_row_count  from dataset_1 d WHERE row_count >500 GROUP by row_count  order by row_count 
+

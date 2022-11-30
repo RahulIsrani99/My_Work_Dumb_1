@@ -1,0 +1,18 @@
+SQL Assigments Links 
+
+1:- Hacker Rank
+
+https://www.hackerrank.com/challenges/sql-projects/problem
+
+2:- LeetCode
+
+https://leetcode.com/tag/database/'
+
+3:- W3Resource
+https://www.w3resource.com/sql-exercises/sql-joins-exercises.php
+
+4:-w3school (compleated quiz link)
+
+https://www.w3schools.com/sql/sql_quiz.asp
+
+
